@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const router = require('./api/routes/route');
 require('dotenv').config();
 
-const authRouter = require('./api/routes/auth.route');
+const authRouter = require('./api/routes/auth.route.js');
 
 const MONGO_URI = process.env.MONGO_URI;
 
