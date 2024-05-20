@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import sagit_logo from '../assets/sagit-logo.png';
 
 export default function Header() {
   return (
