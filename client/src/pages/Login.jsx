@@ -1,8 +1,10 @@
 import Logo from '../assets/sagit-logo.png'
+import Header from '../components/Header'
 
 export default function Home() {
   return (
     <main className='bg-slate-100 min-h-screen'>
+      <Header />
       <div className='flex flex-col gap-4 max-w-lg mx-auto p-20'>
         <img
           className='mx-auto'
