@@ -1,8 +1,6 @@
-import { useState } from 'react'
-const tabs = ['Divinóplis', 'Imperatriz', 'Pedro Leopoldo', 'RUMO', 'Klabin']
+import { Link } from 'react-router-dom';
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState(tabs[0])
 
   return (
     <main className='flex h-screen'>
@@ -10,16 +8,22 @@ export default function Home() {
       <aside className=' bg-gray-200 p-4'>
         <nav>
           <ul>
-              {tabs.map((tab) => (
-                <li
-                  key={tab}
-                  className={`p-3 hover:underline cursor-pointer shadow-md ${activeTab === tab ? 'bg-gray-400' : 'bg-gray-200'}`}
-                  onClick={() => setActiveTab(tab)}
-                >
-                  {tab}
-                </li>
-              ))}
-            </ul>
+            <Link to={'/divinopolis'}>
+              <li>Divinópolis</li>
+            </Link>
+            <Link to={'/imperatriz'}>
+              <li>Imperatriz</li>
+            </Link>
+            <Link to={'pedro-leopoldo'}>
+              <li>Pedro Leopoldo</li>
+            </Link>
+            <Link to={'/rumo'}>
+              <li>Rumo</li>
+            </Link>
+            <Link to={'klabin'}>
+              <li>Klabin</li>
+            </Link>
+          </ul>
           </nav>
       </aside>
       </section>
