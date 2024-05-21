@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../assets/sagit-logo.png'
-import Header from '../components/Header'
 
-export default function Login() {
+export default function SignIn() {
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -33,7 +32,7 @@ export default function Login() {
         setError(data.message);
         return;
       }
-      navigate('/');
+      navigate('/home');
     } catch (error) {
       setError('Erro ao fazer login');
       console.log(error);
@@ -42,7 +41,6 @@ export default function Login() {
 
   return (
     <main className='bg-slate-100 min-h-screen'>
-      <Header />
       <div className='flex flex-col gap-4 max-w-lg mx-auto p-20'>
         <img
           className='mx-auto'
