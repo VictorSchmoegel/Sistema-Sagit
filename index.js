@@ -4,6 +4,7 @@ const router = require('./api/routes/route');
 require('dotenv').config();
 
 const authRouter = require('./api/routes/auth.route.js');
+const colabRouter = require('./api/routes/colab.route.js');
 
 const MONGO_URI = process.env.MONGO_URI;
 
@@ -25,3 +26,4 @@ app.listen(3000, () => {
 });
 
 app.use('/api/auth', authRouter);
+app.use('/api/colab', colabRouter);
