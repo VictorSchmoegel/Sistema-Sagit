@@ -26,4 +26,14 @@ const createColab = async (req, res, next) => {
 
 };
 
-module.exports = { createColab };
+const getColab = async (req, res, next) => {
+  try {
+    const colabs = await Colab.find();
+    res.status(200).json(colabs);
+  } catch (error) {
+    return next(errorHandler(500, 'Erro ao buscar colaboradores'));
+  }
+};
+
+
+module.exports = { createColab, getColab };
