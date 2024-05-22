@@ -9,7 +9,7 @@ export default function Divinopolis() {
   useEffect(() => {
     const getColabs = async () => {
       try {
-        const res = await fetch('/api/colab/getcolab');
+        const res = await fetch('/api/colab/divinopolis');
         const data = await res.json();
         setColabs(data);
         setLoading(false);
@@ -22,7 +22,7 @@ export default function Divinopolis() {
   }, []);
 
   return (
-<main className='flex flex-col bg-slate-100 min-h-screen'>
+    <main className='flex flex-col bg-slate-100 min-h-screen'>
       <h1 className='text-3xl p-3 text-center border'>Divinópolis - MG CONTRATO 4600010284</h1>
       <section className=''>
         <aside>

@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  location: {
+    type: String,
+    required: true,
+  },
 }, { timestamps: true });
 
 const Colab = mongoose.model('Colab', userSchema);

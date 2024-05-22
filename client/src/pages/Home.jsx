@@ -9,19 +9,19 @@ export default function Home() {
         <nav>
           <ul>
             <Link to={'/divinopolis'}>
-              <li>Divinópolis</li>
+              <li className='hover:underline'>Divinópolis</li>
             </Link>
             <Link to={'/imperatriz'}>
-              <li>Imperatriz</li>
+              <li className='hover:underline'>Imperatriz</li>
             </Link>
             <Link to={'pedro-leopoldo'}>
-              <li>Pedro Leopoldo</li>
+              <li className='hover:underline'>Pedro Leopoldo</li>
             </Link>
             <Link to={'/rumo'}>
-              <li>Rumo</li>
+              <li className='hover:underline'>Rumo</li>
             </Link>
             <Link to={'klabin'}>
-              <li>Klabin</li>
+              <li className='hover:underline'>Klabin</li>
             </Link>
           </ul>
           </nav>

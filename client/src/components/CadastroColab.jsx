@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-export default function CadastroColab() {
-  const [formData, setFormData] = useState({})
+export default function CadastroColab({ location }) {
+  const [formData, setFormData] = useState({ location })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
@@ -36,7 +36,7 @@ export default function CadastroColab() {
       setLoading(false)
       setError(null)
       setSuccess(true)
-      setFormData({ nome: '', cpf: '', rg: ''})
+      setFormData({ nome: '', cpf: '', rg: '', location })
     } catch (error) {
       setError('Erro ao cadastrar')
       setLoading(false)
@@ -74,6 +74,15 @@ export default function CadastroColab() {
           onChange={handleChange}
           required
         />
+        <input
+          className='border p-3 rounded-lg'
+          type='text'
+          id='location'
+          placeholder='localização'
+          value={formData.location}
+          onChange={handleChange}
+          required
+        />
       <button
         disabled={loading}
         className='bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-700'
@@ -86,4 +95,3 @@ export default function CadastroColab() {
     </main>
   )
 }
-
