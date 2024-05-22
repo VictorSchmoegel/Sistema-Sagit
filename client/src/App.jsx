@@ -7,6 +7,7 @@ import Imperatriz from "./pages/Imperatriz";
 import PedroLeopoldo from "./pages/PedroLeopoldo";
 import Rumo from "./pages/Rumo";
 import Klabin from "./pages/Klabin";
+import CadastroColab from "./components/CadastroColab";
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
         <Route path="/" element={<SignIn />} />
         <Route path="/home" element={<Home />} />
         <Route path="/divinopolis" element={<Divinopolis />} />
+        <Route path="/cadastro" element={<CadastroColab />} />
         <Route path="/imperatriz" element={<Imperatriz />} />
         <Route path="/pedro-leopoldo" element={<PedroLeopoldo />} />
         <Route path="/rumo" element={<Rumo />} />

@@ -1,15 +1,29 @@
 const Colab = require('../model/colab.model');
+const errorHandler = require('../middlewares/errorHandler');
 
 const createColab = async (req, res, next) => {
   const { nome, cpf, rg } = req.body;
-  const colab = new Colab({ nome, cpf, rg });
-  try {
-    await colab.save();
-    res.status(201).json({ message: 'Colaborador cadastrado com sucesso!' });
-  } catch (error) {
-    next(error);
-    console.log(error);
+
+  if (!nome || !cpf || !rg) {
+    return next(errorHandler(401, 'Preencha todos os campos'));
   }
+
+  try {
+    const cpfExists = await Colab.findOne({ cpf });
+    if (cpfExists) {
+      return next(errorHandler(401, 'CPF já cadastrado'));
+    }
+    const rgExists = await Colab.findOne({ rg });
+    if (rgExists) {
+      return next(errorHandler(401, 'RG já cadastrado'));
+    }
+    const colab = new Colab({ nome, cpf, rg });
+    await colab.save();
+    res.status(201).json({ success: true, message: 'Colaborador cadastrado com sucesso' });
+  } catch (error) {
+    return next(errorHandler(500, 'Erro ao cadastrar colaborador'));
+  }
+
 };
 
 module.exports = { createColab };

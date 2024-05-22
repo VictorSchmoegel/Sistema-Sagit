@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Divinopolis() {
   return (
     <main className='flex flex-col bg-slate-100 min-h-screen'>
@@ -6,7 +8,9 @@ export default function Divinopolis() {
         <aside>
           <nav>
             <ul className='flex gap-4 justify-between border p-3'>
-              <li>Cadastrar colaborador</li>
+              <Link to={'/cadastro'}>
+                <li>Cadastrar colaborador</li>
+              </Link>
               <li>Imperatriz</li>
               <li>Pedro Leopoldo</li>
               <li>Rumo</li>
@@ -15,7 +19,7 @@ export default function Divinopolis() {
           </nav>
         </aside>
       </section>
-      <form>
+      <form className='flex flex-col'>
         <input
           className='border p-3 rounded-lg' 
           type='text'

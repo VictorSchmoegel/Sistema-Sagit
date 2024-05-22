@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema({
   rg: {
     type: Number,
     required: true,
-    minlenght: 9,
   },
 }, { timestamps: true });
 
