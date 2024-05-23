@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 export default function CadastroColab({ location }) {
-  const [formData, setFormData] = useState({ location })
+  const [formData, setFormData] = useState({location: location || 'selecione' })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
@@ -36,7 +36,7 @@ export default function CadastroColab({ location }) {
       setLoading(false)
       setError(null)
       setSuccess(true)
-      setFormData({ nome: '', cpf: '', rg: '', location })
+      setFormData({ nome: '', cpf: '', rg: '', location: formData.location })
     } catch (error) {
       setError('Erro ao cadastrar')
       setLoading(false)
@@ -74,15 +74,20 @@ export default function CadastroColab({ location }) {
           onChange={handleChange}
           required
         />
-        <input
+        <select
           className='border p-3 rounded-lg'
-          type='text'
           id='location'
-          placeholder='localização'
           value={formData.location}
           onChange={handleChange}
           required
-        />
+        >
+          <option value='selecione' required>Selecione o Projeto</option>
+          <option value='Divinópolis'>divinopolis</option>
+          <option value='Imperatriz'>Imperatriz</option>
+          <option value='Pedro Leopoldo'>Pedro Leopoldo</option>
+          <option value='Rumo'>Rumo</option>
+          <option value='Klabin'>Klabin</option>
+        </select>
       <button
         disabled={loading}
         className='bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-700'
