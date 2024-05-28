@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 export default function CadastroColab({ location }) {
-  const [formData, setFormData] = useState({location: location || 'selecione' })
+  const [formData, setFormData] = useState({location: location || '' })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
@@ -9,9 +9,9 @@ export default function CadastroColab({ location }) {
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.id]: e.target.value,
-    })
-  }
+      location: e.target.value,
+    });
+  };
   console.log(formData)
 
   const handleSubmit = async (e) => {
@@ -28,7 +28,7 @@ export default function CadastroColab({ location }) {
       })
       const data = await res.json()
       console.log(data)
-      if (data.success === false) {
+      if (!data.success) {
         setError(data.message)
         setLoading(false)
         return
@@ -53,7 +53,7 @@ export default function CadastroColab({ location }) {
           id='nome'
           placeholder='Nome'
           value={formData.nome}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
           required
         />
         <input
@@ -62,7 +62,7 @@ export default function CadastroColab({ location }) {
           id='cpf'
           placeholder='CPF'
           value={formData.cpf}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, cpf: e.target.value })}
           required
         />
         <input
@@ -71,23 +71,24 @@ export default function CadastroColab({ location }) {
           id='rg'
           placeholder='RG'
           value={formData.rg}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, rg: e.target.value })}
           required
         />
-        <select
-          className='border p-3 rounded-lg'
-          id='location'
-          value={formData.location}
-          onChange={handleChange}
-          required
-        >
-          <option value='selecione' required>Selecione o Projeto</option>
-          <option value='Divinópolis'>divinopolis</option>
-          <option value='Imperatriz'>Imperatriz</option>
-          <option value='Pedro Leopoldo'>Pedro Leopoldo</option>
-          <option value='Rumo'>Rumo</option>
-          <option value='Klabin'>Klabin</option>
-        </select>
+        <div className="flex flex-col gap-2 border p-3 rounded-lg">
+          <p className='text-2xl font-semibold'>Selecione o Projeto:</p>
+          {['Divinópolis', 'Imperatriz', 'Pedro Leopoldo', 'Rumo', 'Klabin'].map((proj) => (
+            <div className='flex gap-2 hover:underline' key={proj}>
+              <input
+                type="checkbox"
+                id={proj}
+                value={proj}
+                checked={formData.location === proj}
+                onChange={handleChange}
+              />
+              <label htmlFor={proj}>{proj}</label>
+            </div>
+          ))}
+        </div>
       <button
         disabled={loading}
         className='bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-700'
