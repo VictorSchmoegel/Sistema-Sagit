@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState ,useEffect } from "react";
+import { FaEye } from "react-icons/fa";
 
 export default function Divinopolis() {
   const [colabs, setColabs] = useState([]);
@@ -9,7 +10,7 @@ export default function Divinopolis() {
   useEffect(() => {
     const getColabs = async () => {
       try {
-        const res = await fetch('/api/colab/divinopolis');
+        const res = await fetch('/api/colab/Divinópolis');
         const data = await res.json();
         setColabs(data);
         setLoading(false);
@@ -64,6 +65,11 @@ export default function Divinopolis() {
                 <td className='py-2 px-4 border'>{colab.nome}</td>
                 <td className='py-2 px-4 border'>{colab.cpf}</td>
                 <td className='py-2 px-4 border'>{colab.rg}</td>
+                <td className='py-2 px-4 border'>
+                  <Link to={`/visualizar/${colab._id}`}>
+                    <FaEye />
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>

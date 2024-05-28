@@ -8,7 +8,7 @@ export default function Home() {
       <aside className=' bg-gray-200 p-4'>
         <nav>
           <ul>
-            <Link to={'/divinopolis'}>
+            <Link to={'/Divinópolis'}>
               <li className='hover:underline'>Divinópolis</li>
             </Link>
             <Link to={'/imperatriz'}>

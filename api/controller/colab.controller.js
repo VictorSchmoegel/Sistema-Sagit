@@ -35,5 +35,15 @@ const getColab = async (req, res, next) => {
   }
 };
 
+const getColabById = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const colab = await Colab.findById(id);
+    res.status(200).json(colab);
+  } catch (error) {
+    next(error);
+  }
+};
 
-module.exports = { createColab, getColab };
+
+module.exports = { createColab, getColab, getColabById };
