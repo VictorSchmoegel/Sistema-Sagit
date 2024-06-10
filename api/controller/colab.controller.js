@@ -2,16 +2,7 @@ const Colab = require('../model/colab.model');
 const errorHandler = require('../middlewares/errorHandler');
 const multer = require('multer');
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, './files');
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + '-' + file.originalname);
-  }
-});
-
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 const createColab = async (req, res, next) => {
@@ -58,23 +49,33 @@ const getColabById = async (req, res, next) => {
   }
 };
 
-const addPdfFile = async (req, res, next) => {
+const addPdfFiles = async (req, res, next) => {
   const { id } = req.params;
-  const pdf = req.file ? req.file.buffer : null;
+  const files = req.files;
+  const { expiryDates, names } = req.body;
 
   try {
-    const colab = await Colab.findByIdAndUpdate(id, { pdf });
-    res.status(200).json({ success: true, message: 'PDF adicionado com sucesso' });
-  }
-  catch (error) {
+    const pdfs = files.map((file, index) => ({
+      name: names[index],
+      data: file.buffer,
+      expiryDate: new Date(expiryDates[index]),
+    }));
+
+    const colab = await Colab.findByIdAndUpdate(
+      id,
+      { $push: { pdfs: { $each: pdfs } } },
+      { new: true }
+    );
+
+    res.status(200).json({ success: true, message: 'PDFs adicionados com sucesso', colab });
+  } catch (error) {
     next(error);
   }
 };
-
 
 module.exports = {
   createColab,
   getColab,
   getColabById,
-  addPdfFile: [upload.single('pdf'), addPdfFile]
+  addPdfFiles,
 };
