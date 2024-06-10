@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  pdf: {
+    type: Buffer,
+    required: false,
+  },
 }, { timestamps: true });
 
 const Colab = mongoose.model('Colab', userSchema);

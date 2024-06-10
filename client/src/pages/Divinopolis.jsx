@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState ,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { FaEye } from "react-icons/fa";
 
 export default function Divinopolis() {
@@ -25,7 +25,7 @@ export default function Divinopolis() {
   return (
     <main className='flex flex-col bg-slate-100 min-h-screen'>
       <h1 className='text-3xl p-3 text-center border'>Divinópolis - MG CONTRATO 4600010284</h1>
-      <section className=''>
+      <section>
         <aside>
           <nav>
             <ul className='flex gap-4 justify-between border p-3'>
