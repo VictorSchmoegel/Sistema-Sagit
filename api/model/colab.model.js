@@ -1,20 +1,5 @@
 const mongoose = require('mongoose');
 
-const pdfSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  data: {
-    type: Buffer,
-    required: true
-  },
-  expiryDate: {
-    type: Date,
-    required: true
-  },
-});
-
 const userSchema = new mongoose.Schema({
   nome: {
     type: String,
@@ -34,7 +19,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  pdf: [pdfSchema],
 }, { timestamps: true });
 
 const Colab = mongoose.model('Colab', userSchema);

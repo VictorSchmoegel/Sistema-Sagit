@@ -8,6 +8,5 @@ const { createColab, getColab, getColabById, addPdfFiles } = require('../control
 router.post('/create', createColab);
 router.get('/:location', getColab);
 router.get('/colab/:id', getColabById);
-router.post('/pdf/:id', upload.array('pdfs'), addPdfFiles);
 
 module.exports = router;

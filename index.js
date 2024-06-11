@@ -5,6 +5,7 @@ require('dotenv').config();
 
 const authRouter = require('./api/routes/auth.route.js');
 const colabRouter = require('./api/routes/colab.route.js');
+const pdfRouter = require('./api/routes/pdf.route.js');
 
 const MONGO_URI = process.env.MONGO_URI;
 
@@ -27,6 +28,7 @@ app.listen(3000, () => {
 
 app.use('/api/auth', authRouter);
 app.use('/api/colab', colabRouter);
+app.use('/api/pdf', pdfRouter);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
