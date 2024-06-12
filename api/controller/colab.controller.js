@@ -35,9 +35,20 @@ const getColabById = async (req, res, next) => {
   }
 };
 
+const getColabByLocation = async (req, res, next) => {
+  const { location } = req.params;
+  try {
+    const colab = await Colab.find({ location });
+    return res.status(200).json(colab);
+  } catch (error) {
+    next(error)
+  }
+};
+
 
 module.exports = {
   createColab,
   getColabById,
   getAll,
+  getColabByLocation
 };

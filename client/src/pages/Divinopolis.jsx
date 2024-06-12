@@ -10,7 +10,7 @@ export default function Divinopolis() {
   useEffect(() => {
     const getColabs = async () => {
       try {
-        const res = await fetch('/api/colab/Divinópolis');
+        const res = await fetch('/api/colab/location/Divinópolis');
         const data = await res.json();
         setColabs(data);
         setLoading(false);
