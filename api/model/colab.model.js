@@ -7,12 +7,12 @@ const userSchema = new mongoose.Schema({
     minlenght: 4,
   },
   cpf: {
-    type: Number,
+    type: String,
     required: true,
     minlenght: 11,
   },
   rg: {
-    type: Number,
+    type: String,
     required: true,
   },
   location: {
@@ -23,15 +23,12 @@ const userSchema = new mongoose.Schema({
     {
       name: {
         type: String,
-        required: true,
       },
       expiryDate: {
         type: Date,
-        required: true,
       },
-      path: {
-        type: String,
-        required: true,
+      data: {
+        type: Buffer,
       },
     }
   ]

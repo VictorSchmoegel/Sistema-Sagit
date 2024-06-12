@@ -3,10 +3,10 @@ const router = express.Router();
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 
-const { createColab, getColab, getColabById, addPdfFiles } = require('../controller/colab.controller');
+const { createColab, getColabById, getAll } = require('../controller/colab.controller');
 
 router.post('/create', createColab);
-router.get('/:location', getColab);
-router.get('/colab/:id', getColabById);
+router.get('/all', getAll);
+router.get('/:id', getColabById);
 
 module.exports = router;

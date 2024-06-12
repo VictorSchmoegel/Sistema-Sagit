@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 export default function VisualizarColab() {
   const params = useParams();
-  const [colab, setColab] = useState(null);
+  const [colab, setColab] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [fileNames, setFileNames] = useState(['']);
@@ -13,11 +13,14 @@ export default function VisualizarColab() {
   useEffect(() => {
     const getColab = async () => {
       try {
+        console.log('Fetching collaborator data...');
         const res = await fetch(`/api/colab/${params.id}`);
         const data = await res.json();
+        console.log('Data received:', data);
         setColab(data);
         setLoading(false);
       } catch (error) {
+        console.error('Error fetching collaborator data:', error);
         setError('Erro ao buscar colaboradores');
         setLoading(false);
       }
@@ -47,6 +50,7 @@ export default function VisualizarColab() {
     setFileNames([...fileNames, '']);
     setFiles([...files, null]);
     setExpiryDates([...expiryDates, '']);
+    console.log(fileNames, files, expiryDates);
   };
 
   const handleSubmit = async (e) => {
@@ -77,8 +81,8 @@ export default function VisualizarColab() {
     <main className='flex flex-col bg-slate-100 min-h-screen'>
       <h1 className='text-3xl p-3 text-center border'>Visualizar Colaborador</h1>
       <section>
+        <h2>Colaborador: {colab?.nome}</h2>
         <form className='flex flex-col gap-4 p-3' onSubmit={handleSubmit}>
-          <h2>Colaborador: {colab?.nome}</h2>
           {fileNames.map((_, index) => (
             <div key={index} className='flex gap-4'>
               <input
@@ -114,19 +118,20 @@ export default function VisualizarColab() {
           </button>
           <button
             className='bg-blue-500 text-white p-3 rounded-lg'
-            type='submit'
+            type='button'
+            onClick={handleSubmit}
           >
             Enviar
           </button>
         </form>
         <section className='p-3'>
-          {colab.pdfs?.map((pdf, index) => (
-            <div key={index}>
-              <a href={`/api/colab/pdf/${params.id}/file/${index}`} target='_blank' rel='noopener noreferrer'>
-                {pdf.name}
-              </a>
+          {colab && colab.pdfs && colab.pdfs.map((pdf, index) => (
+            <div key={index} className='flex gap-4'>
+              <p>{pdf.name}</p>
+              <a href={`/api/colab/pdf/${params.id}/file/${index}`}>Download</a>
             </div>
-          ))}
+          ))
+          }
         </section>
       </section>
     </main>
