@@ -6,21 +6,18 @@ export default function VisualizarColab() {
   const [colab, setColab] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [fileNames, setFileNames] = useState(['']);
-  const [files, setFiles] = useState([null]);
-  const [expiryDates, setExpiryDates] = useState(['']);
+  const [fileNames, setFileNames] = useState([]);
+  const [files, setFiles] = useState([]);
+  const [expiryDates, setExpiryDates] = useState([]);
 
   useEffect(() => {
     const getColab = async () => {
       try {
-        console.log('Fetching collaborator data...');
         const res = await fetch(`/api/colab/${params.id}`);
         const data = await res.json();
-        console.log('Data received:', data);
         setColab(data);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching collaborator data:', error);
         setError('Erro ao buscar colaboradores');
         setLoading(false);
       }
@@ -35,9 +32,13 @@ export default function VisualizarColab() {
   };
 
   const handleNameChange = (e, index) => {
+    const newFiles = [...files];
+    newFiles[index] = e.target.files[0];
     const newNames = [...fileNames];
     newNames[index] = e.target.value;
     setFileNames(newNames);
+    setFiles(newFiles);
+    console.log('fileNames:', fileNames);
   };
 
   const handleExpiryDateChange = (e, index) => {
@@ -47,7 +48,7 @@ export default function VisualizarColab() {
   };
 
   const handleAddField = () => {
-    setFileNames([...fileNames, '']);
+    setFileNames([...fileNames, 'Novo Arquivo']);
     setFiles([...files, null]);
     setExpiryDates([...expiryDates, '']);
     console.log(fileNames, files, expiryDates);
@@ -80,14 +81,14 @@ export default function VisualizarColab() {
   return (
     <main className='flex flex-col bg-slate-100 min-h-screen'>
       <h1 className='text-3xl p-3 text-center border'>Visualizar Colaborador</h1>
-      <section>
+      <section className='flex flex-col gap-4 text-center'>
         <h2>Colaborador: {colab?.nome}</h2>
         <form className='flex flex-col gap-4 p-3' onSubmit={handleSubmit}>
           {fileNames.map((_, index) => (
             <div key={index} className='flex gap-4'>
               <input
                 className='border p-3 rounded-lg'
-                name='name'
+                name='fileNames'
                 type='text'
                 placeholder='Nome do PDF'
                 value={fileNames[index]}
