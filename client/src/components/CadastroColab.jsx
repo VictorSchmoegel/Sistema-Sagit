@@ -12,7 +12,6 @@ export default function CadastroColab({ location }) {
       location: e.target.value,
     });
   };
-  console.log(formData)
 
   const handleSubmit = async (e) => {
     e.preventDefault()

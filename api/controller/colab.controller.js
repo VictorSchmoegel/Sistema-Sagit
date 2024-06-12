@@ -54,10 +54,31 @@ const getColabByLocation = async (req, res, next) => {
   }
 };
 
+const addPdfFile = async (req, res, next) => {
+  const { id } = req.params;
+  const file = req.file;
+  const { name, expiryDate } = req.body;
+  try {
+    const pdfs = file.map((file, index) => ({
+      name: name[index],
+      expiryDate: expiryDate[index],
+      data: file.buffer,
+    }));
+    const colab = await Colab.findByIdAndUpdate(
+      id,
+      { $push: { pdfs: { $each: pdfs } } },
+      { new: true }
+    );
+    res.status(200).json({ message: 'PDF adicionado com sucesso', colab });
+  } catch (error) {
+    next(error);
+  }
 
+};
 module.exports = {
   createColab,
   getColabById,
   getAll,
-  getColabByLocation
+  getColabByLocation,
+  addPdfFile,
 };
