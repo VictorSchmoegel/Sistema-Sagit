@@ -6,6 +6,15 @@ const createColab = async (req, res, next) => {
   const { nome, cpf, rg, location } = req.body;
   try {
     const colab = new Colab({ nome, cpf, rg, location });
+    if (nome === '' || cpf === '' || rg === '' || location === '') {
+      return res.status(400).json({ message: 'Preencha todos os campos' });
+    }
+    if (await Colab.findOne({ cpf })) {
+      return res.status(400).json({ message: 'CPF já cadastrado' });
+    }
+    if (await Colab.findOne({ rg })) {
+      return res.status(400).json({ message: 'RG já cadastrado' });
+    }
     await colab.save();
     return res.status(201).json(colab);
   } catch (error) {
