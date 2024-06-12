@@ -19,6 +19,22 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  pdfs: [
+    {
+      name: {
+        type: String,
+        required: true,
+      },
+      expiryDate: {
+        type: Date,
+        required: true,
+      },
+      path: {
+        type: String,
+        required: true,
+      },
+    }
+  ]
 }, { timestamps: true });
 
 const Colab = mongoose.model('Colab', userSchema);

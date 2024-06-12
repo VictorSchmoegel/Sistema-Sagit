@@ -36,7 +36,7 @@ app.listen(3000, () => {
 
 app.use('/api/auth', authRouter);
 app.use('/api/colab', colabRouter);
-app.use('/api/pdf', pdfRouter);
+app.use('/api/colab/pdf', pdfRouter);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

@@ -63,6 +63,7 @@ export default function VisualizarColab() {
         body: formData,
       });
       const data = await res.json();
+      setColab(data.updatedColab);
       console.log(data);
     } catch (error) {
       console.error(error);

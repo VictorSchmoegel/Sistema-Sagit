@@ -1,42 +1,41 @@
-const Pdf = require('../model/pdf.model');
+const Colab = require('../model/colab.model');
 const path = require('path');
-
-const getPdf = async (req, res) => {
-  try {
-    const pdf = await Pdf.find();
-    res.status(200).json({ pdf });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
 
 const addPdf = async (req, res) => {
   try {
-    const { name } = req.body;
-    if (!req.file) {
-      return res.status(400).json({ message: 'File not provided' });
+    const { id } = req.params;
+    const { names, expiryDates } = req.body;
+    if (!req.files) {
+      return res.status(400).json({ message: 'Arquivos não fornecidos' });
     }
-    const file = req.file.path;
-    const newPdf = await Pdf.create({ name, file });
-    res.status(201).json({ newPdf });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+
+    const files = req.files.map((file, index) => ({
+      name: names[index],
+      expiryDate: expiryDates[index],
+      path: file.path,
+    }));
+
+    const updatedColab = await Colab.findByIdAndUpdate(id, {
+      $push: { pdfs: { $each: files } },
+    }, { new: true });
+
+    res.status(201).json({ updatedColab });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
 const downloadPdf = async (req, res) => {
-  const { id } = req.params;
-  const pdf = await Pdf.findById(id);
-  if (!pdf) {
-    return next(new Error("No item found"));
+  const { id, fileIndex } = req.params;
+  const colab = await Colab.findById(id);
+  if (!colab || !colab.pdfs[fileIndex]) {
+    return res.status(404).json({ message: 'Arquivo não encontrado' });
   }
-  const file = pdf.file;
-  const filePath = path.join(__dirname, `../../${file}`);
+  const filePath = path.join(__dirname, `../../${colab.pdfs[fileIndex].path}`);
   res.download(filePath);
 };
 
 module.exports = {
-  getPdf,
   addPdf,
   downloadPdf,
 };
