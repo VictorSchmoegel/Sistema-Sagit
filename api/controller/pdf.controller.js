@@ -1,7 +1,7 @@
 const Pdf = require('../model/pdf.model');
 const path = require('path');
 
-const getPdf = async (req, res, next) => {
+const getPdf = async (req, res) => {
   try {
     const pdf = await Pdf.find();
     res.status(200).json({ pdf });
@@ -10,27 +10,28 @@ const getPdf = async (req, res, next) => {
   }
 };
 
-const addPdf = async (req, res, next) => {
+const addPdf = async (req, res) => {
   try {
-    const { name, data } = req.body;
+    const { name } = req.body;
     if (!req.file) {
-      return next(errorHandler(401, 'Selecione um arquivo'));
+      return res.status(400).json({ message: 'File not provided' });
     }
-    const pdf = req.file.path;
-    const newPdf = await Pdf.create({ name, data: pdf });
+    const file = req.file.path;
+    const newPdf = await Pdf.create({ name, file });
     res.status(201).json({ newPdf });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
-const downloadPdf = async (req, res, next) => {
+const downloadPdf = async (req, res) => {
   const { id } = req.params;
   const pdf = await Pdf.findById(id);
   if (!pdf) {
-    return next(errorHandler(404, 'Pdf não encontrado'));
+    return next(new Error("No item found"));
   }
-  const filePath = path.join(__dirname, `../../${pdf.data}`);
+  const file = pdf.file;
+  const filePath = path.join(__dirname, `../../${file}`);
   res.download(filePath);
 };
 

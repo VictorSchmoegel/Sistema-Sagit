@@ -5,7 +5,7 @@ const pdfSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  data: {
+  file: {
     type: String,
     required: true,
   },

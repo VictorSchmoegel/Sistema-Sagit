@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const router = require('./api/routes/route');
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
 const authRouter = require('./api/routes/auth.route.js');
@@ -8,6 +10,11 @@ const colabRouter = require('./api/routes/colab.route.js');
 const pdfRouter = require('./api/routes/pdf.route.js');
 
 const MONGO_URI = process.env.MONGO_URI;
+
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 mongoose
   .connect(MONGO_URI)
@@ -20,6 +27,7 @@ mongoose
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(router);
 
 app.listen(3000, () => {
