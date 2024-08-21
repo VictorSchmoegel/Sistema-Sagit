@@ -2,12 +2,10 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaEye } from "react-icons/fa";
 import Modal from 'react-modal';
-import { useParams } from 'react-router-dom';
 
 Modal.setAppElement('#root');
 
 export default function Divinopolis() {
-  const params = useParams();
   const [colabs, setColabs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -80,29 +78,29 @@ export default function Divinopolis() {
           placeholder='Buscar colaborador'
         />
       </form>
-      <section className='max-w-lg mx-auto p-20'>
-        <h2 className='text-2xl font-bold mb-4'>Colaboradores Cadastrados</h2>
+      <section className='max-w-lg mx-auto p-30 mt-10'>
+        <h2 className='text-2xl font-bold mb-4 text-center'>Colaboradores Cadastrados</h2>
         {loading && <p>Carregando...</p>}
         {error && <p className='text-red-600 text-center'>{error}</p>}
         <table className='min-w-full bg-white'>
-          <thead>
+          <thead className="border">
             <tr>
-              <th className='py-2'>Nome</th>
-              <th className='py-2'>CPF</th>
-              <th className='py-2'>RG</th>
-              <th className='py-2'>Visualizar</th>
-              <th className='py-2'>Excluir</th>
+              <th className='p-2 border'>Nome</th>
+              <th className='p-2 border'>CPF</th>
+              <th className='p-2 border'>RG</th>
+              <th className='p-2 border'>Visualizar</th>
+              <th className='p-2 border'>Excluir</th>
             </tr>
           </thead>
           <tbody>
             {colabs.map((colab) => (
-              <tr key={colab._id} className='border-b'>
+              <tr key={colab._id} className='border px-4'>
                 <td className='py-2 px-4 border'>{colab.nome}</td>
                 <td className='py-2 px-4 border'>{colab.cpf}</td>
                 <td className='py-2 px-4 border'>{colab.rg}</td>
                 <td className='py-2 px-4 border'>
                   <Link to={`/visualizar/${colab._id}`}>
-                    <FaEye />
+                    <FaEye className="text-center ml-5" />
                   </Link>
                 </td>
                 <td className="py-2 px-4 border">
@@ -125,6 +123,7 @@ export default function Divinopolis() {
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
         contentLabel="Confirmação de Exclusão"
+        className='max-w-md mx-auto bg-gray-700 p-4 rounded-lg text-white'
       >
         <h2>Tem certeza que deseja excluir este colaborador?</h2>
         <div className="flex gap-4">
