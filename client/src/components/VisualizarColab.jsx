@@ -49,6 +49,22 @@ export default function VisualizarColab() {
     setExpiryDates([...expiryDates, '']);
   };
 
+  const deletePdf = async (index) => {
+    try {
+      const res = await fetch(`/api/colab/pdf/${params.id}/file/${index}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setColab(data.updatedColab); // Atualize a lista de PDFs após exclusão
+      } else {
+        console.error('Error deleting PDF');
+      }
+    } catch (error) {
+      console.error('Error deleting PDF:', error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -113,22 +129,29 @@ export default function VisualizarColab() {
           </button>
           <button
             className='bg-blue-500 text-white p-3 rounded-lg'
-            type='button'
-            onClick={handleSubmit}
+            type='submit'
           >
             Enviar
           </button>
         </form>
         <section className='p-3'>
-          <div className='b-3'>
-            {colab && colab.pdfs && colab.pdfs.map((pdf, index) => (
-              <div key={index} className='flex gap-4 border p-3'>
-                <p>{pdf.name}</p>
-                <a href={`/api/colab/pdf/${params.id}/file/${index}`}>Download</a>
+          {colab && colab.pdfs && colab.pdfs.map((pdf, index) => (
+            <div key={index} className='flex gap-4'>
+              <p>{pdf.name}</p>
+              <p>{pdf.expiryDate}</p>
+              <div>
+                <a className='ml-2 bg-green-500 p-2 rounded' href={`/api/colab/pdf/${params.id}/file/${index}`} download>
+                  Download
+                </a>
+                <button
+                  className='ml-2 bg-red-500 text-white p-2 rounded'
+                  onClick={() => deletePdf(index)}
+                >
+                  Excluir
+                </button>
               </div>
-            ))
-            }
-          </div>
+            </div>
+          ))}
         </section>
       </section>
     </main>

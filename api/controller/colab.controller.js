@@ -75,10 +75,25 @@ const addPdfFile = async (req, res, next) => {
   }
 
 };
+
+const deleteColab = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const colab = await Colab.findByIdAndDelete(id);
+    if (!colab) {
+      return res.status(404).json({ message: 'Colab not found' });
+    }
+    return res.status(200).json({ message: 'Colab deleted' });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createColab,
   getColabById,
   getAll,
   getColabByLocation,
   addPdfFile,
+  deleteColab,
 };

@@ -1,11 +1,18 @@
-import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { FaEye } from "react-icons/fa";
+import Modal from 'react-modal';
+import { useParams } from 'react-router-dom';
+
+Modal.setAppElement('#root');
 
 export default function Divinopolis() {
+  const params = useParams();
   const [colabs, setColabs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [deleteId, setDeleteId] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   useEffect(() => {
     const getColabs = async () => {
@@ -21,6 +28,33 @@ export default function Divinopolis() {
     }
     getColabs();
   }, []);
+
+  const deleteColab = async (id) => {
+    try {
+      const res = await fetch(`/api/colab/delete${params.id}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        const newColabs = colabs.filter((colab) => colab._id !== id);
+        setColabs(newColabs);
+      } else {
+        setError('Erro ao deletar colaborador');
+      }
+    } catch (error) {
+      setError('Erro ao deletar colaborador');
+    } finally {
+      setModalIsOpen(false);
+    }
+  }
+
+  const handleDeleteClick = (id) => {
+    setDeleteId(id);
+    setModalIsOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    deleteColab(deleteId);
+  };
 
   return (
     <main className='flex flex-col bg-slate-100 min-h-screen'>
@@ -57,6 +91,8 @@ export default function Divinopolis() {
               <th className='py-2'>Nome</th>
               <th className='py-2'>CPF</th>
               <th className='py-2'>RG</th>
+              <th className='py-2'>Visualizar</th>
+              <th className='py-2'>Excluir</th>
             </tr>
           </thead>
           <tbody>
@@ -70,11 +106,43 @@ export default function Divinopolis() {
                     <FaEye />
                   </Link>
                 </td>
+                <td className="py-2 px-4 border">
+                  <button
+                    type="button"
+                    className="text-red-500"
+                    onClick={() => handleDeleteClick(colab._id)}
+                  >
+                    Excluir
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </section>
+
+      {/* Modal de confirmação */}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        contentLabel="Confirmação de Exclusão"
+      >
+        <h2>Tem certeza que deseja excluir este colaborador?</h2>
+        <div className="flex gap-4">
+          <button
+            onClick={handleConfirmDelete}
+            className="bg-red-500 text-white p-2 rounded"
+          >
+            Sim
+          </button>
+          <button
+            onClick={() => setModalIsOpen(false)}
+            className="bg-gray-500 text-white p-2 rounded"
+          >
+            Não
+          </button>
+        </div>
+      </Modal>
     </main>
-  )
+  );
 }
