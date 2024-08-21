@@ -1,159 +1,164 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-export default function VisualizarColab() {
-  const params = useParams();
-  const [colab, setColab] = useState('');
+const VisualizarColab = () => {
+  const { id } = useParams();
+  const [colab, setColab] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [fileNames, setFileNames] = useState([]);
-  const [files, setFiles] = useState([]);
+  const [pdfFiles, setPdfFiles] = useState([]);
+  const [names, setNames] = useState([]);
   const [expiryDates, setExpiryDates] = useState([]);
 
   useEffect(() => {
-    const getColab = async () => {
+    const fetchColab = async () => {
       try {
-        const res = await fetch(`/api/colab/${params.id}`);
-        const data = await res.json();
+        const response = await fetch(`/api/colab/${id}`);
+        if (!response.ok) {
+          throw new Error('Erro ao buscar os dados do colaborador');
+        }
+        const data = await response.json();
         setColab(data);
-        setLoading(false);
-      } catch (error) {
-        setError('Erro ao buscar colaboradores');
+      } catch (err) {
+        setError(err.message);
+      } finally {
         setLoading(false);
       }
     };
-    getColab();
-  }, [params.id]);
+
+    fetchColab();
+  }, [id]);
 
   const handleFileChange = (e, index) => {
-    const newFiles = [...files];
-    newFiles[index] = e.target.files[0];
-    setFiles(newFiles);
+    const files = Array.from(e.target.files);
+    const newPdfFiles = [...pdfFiles];
+    newPdfFiles[index] = files[0];
+    setPdfFiles(newPdfFiles);
   };
 
   const handleNameChange = (e, index) => {
-    const newNames = [...fileNames];
+    const newNames = [...names];
     newNames[index] = e.target.value;
-    setFileNames(newNames);
+    setNames(newNames);
   };
 
   const handleExpiryDateChange = (e, index) => {
-    const newDates = [...expiryDates];
-    newDates[index] = e.target.value;
-    setExpiryDates(newDates);
-  };
-
-  const handleAddField = () => {
-    setFileNames([...fileNames, '']);
-    setFiles([...files, null]);
-    setExpiryDates([...expiryDates, '']);
-  };
-
-  const deletePdf = async (index) => {
-    try {
-      const res = await fetch(`/api/colab/pdf/${params.id}/file/${index}`, {
-        method: 'DELETE',
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setColab(data.updatedColab); // Atualize a lista de PDFs após exclusão
-      } else {
-        console.error('Error deleting PDF');
-      }
-    } catch (error) {
-      console.error('Error deleting PDF:', error);
-    }
+    const newExpiryDates = [...expiryDates];
+    newExpiryDates[index] = e.target.value;
+    setExpiryDates(newExpiryDates);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    files.forEach((file, index) => {
+
+    pdfFiles.forEach((file, index) => {
       formData.append('pdfs', file);
-      formData.append('names', fileNames[index]);
+      formData.append('names', names[index]);
       formData.append('expiryDates', expiryDates[index]);
     });
+
     try {
-      const res = await fetch(`/api/colab/pdf/${params.id}`, {
+      const response = await fetch(`/api/colab/pdf/${id}`, {
         method: 'POST',
         body: formData,
       });
-      const data = await res.json();
-      setColab(data.updatedColab);
-    } catch (error) {
-      console.error(error);
+
+      if (!response.ok) {
+        throw new Error('Erro ao fazer upload dos documentos');
+      }
+
+      const updatedColab = await response.json();
+      setColab(updatedColab);
+      setPdfFiles([]);
+      setNames([]);
+      setExpiryDates([]);
+    } catch (err) {
+      setError(err.message);
     }
   };
 
-  if (loading) return <p>Carregando...</p>;
-  if (error) return <p className='text-red-600 text-center'>{error}</p>;
+  if (loading) return <div className="text-center mt-10">Carregando...</div>;
+  if (error) return <div className="text-center text-red-500 mt-10">{error}</div>;
 
   return (
-    <main className='flex flex-col bg-slate-100 min-h-screen'>
-      <h1 className='text-3xl p-3 text-center border'>Visualizar Colaborador</h1>
-      <section className='flex flex-col gap-4 text-center'>
-        <h2>Colaborador: {colab?.nome}</h2>
-        <form className='flex flex-col gap-4 p-3' onSubmit={handleSubmit}>
-          {fileNames.map((_, index) => (
-            <div key={index} className='flex gap-4'>
+    <div className="container mx-auto p-4">
+      <h2 className="text-2xl font-semibold mb-4">Colaborador: {colab.nome}</h2>
+
+      <h3 className="text-xl font-medium mb-2">Documentos:</h3>
+      <ul className="space-y-4">
+        {colab.pdfs.map((pdf, index) => (
+          <li key={index} className="bg-gray-100 p-4 rounded-lg shadow-sm">
+            <p className="text-lg font-medium">Nome: {pdf.name}</p>
+            <p className="text-sm text-gray-600">Data de Validade: {pdf.expiryDate}</p>
+            <a
+              href={`/api/colab/pdf/${id}/file/${index}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:underline mt-2 inline-block"
+            >
+              Baixar
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <h3 className="text-xl font-medium mt-8 mb-4">Adicionar Novo Documento</h3>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {pdfFiles.map((_, index) => (
+          <div key={index} className="bg-white p-4 rounded-lg shadow-sm space-y-4">
+            <div className="flex flex-col sm:flex-row sm:space-x-4">
+              <label className="flex-1">
+                Nome:
+                <input
+                  type="text"
+                  value={names[index] || ''}
+                  onChange={(e) => handleNameChange(e, index)}
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </label>
+              <label className="flex-1">
+                Data de Validade:
+                <input
+                  type="date"
+                  value={expiryDates[index] || ''}
+                  onChange={(e) => handleExpiryDateChange(e, index)}
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </label>
+            </div>
+            <label>
+              Documento PDF:
               <input
-                className='border p-3 rounded-lg'
-                name='fileNames'
-                type='text'
-                placeholder='Nome do PDF'
-                value={fileNames[index]}
-                onChange={(e) => handleNameChange(e, index)}
-              />
-              <input
-                className='border p-3 rounded-lg'
-                name='expiryDate'
-                type='date'
-                value={expiryDates[index]}
-                onChange={(e) => handleExpiryDateChange(e, index)}
-              />
-              <input
-                className='border p-3 rounded-lg text-center'
-                name='file'
-                type='file'
-                accept='application/pdf'
+                type="file"
+                accept="application/pdf"
                 onChange={(e) => handleFileChange(e, index)}
+                required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
-            </div>
-          ))}
+            </label>
+          </div>
+        ))}
+        <div className="flex justify-between">
           <button
-            className='bg-blue-500 text-white p-3 rounded-lg'
-            type='button'
-            onClick={handleAddField}
+            type="button"
+            onClick={() => setPdfFiles([...pdfFiles, null])}
+            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
           >
-            Adicionar Documento
+            Adicionar Outro Documento
           </button>
           <button
-            className='bg-blue-500 text-white p-3 rounded-lg'
-            type='submit'
+            type="submit"
+            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
-            Enviar
+            Enviar Documentos
           </button>
-        </form>
-        <section className='p-3'>
-          {colab && colab.pdfs && colab.pdfs.map((pdf, index) => (
-            <div key={index} className='flex gap-4'>
-              <p>{pdf.name}</p>
-              <p>{pdf.expiryDate}</p>
-              <div>
-                <a className='ml-2 bg-green-500 p-2 rounded' href={`/api/colab/pdf/${params.id}/file/${index}`} download>
-                  Download
-                </a>
-                <button
-                  className='ml-2 bg-red-500 text-white p-2 rounded'
-                  onClick={() => deletePdf(index)}
-                >
-                  Excluir
-                </button>
-              </div>
-            </div>
-          ))}
-        </section>
-      </section>
-    </main>
+        </div>
+      </form>
+    </div>
   );
-}
+};
+
+export default VisualizarColab;

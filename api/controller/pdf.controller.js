@@ -13,7 +13,7 @@ const addPdf = async (req, res) => {
     const files = req.files.map((file, index) => ({
       name: names[index],
       expiryDate: expiryDates[index],
-      path: file.filename,
+      path: file.path,
     }));
 
     const updatedColab = await Colab.findByIdAndUpdate(id, {
@@ -33,7 +33,7 @@ const downloadPdf = async (req, res) => {
     if (!colab || !colab.pdfs[fileIndex]) {
       return res.status(404).json({ message: 'Arquivo não encontrado' });
     }
-    const filePath = path.join(__dirname, '../../client/public', colab.pdfs[fileIndex].path);
+    const filePath = path.join(__dirname, '../../uploads', colab.pdfs[fileIndex].path);
     if (fs.existsSync(filePath)) {
       res.download(filePath);
     } else {
@@ -51,7 +51,7 @@ const deletePdf = async (req, res) => {
     if (!colab || !colab.pdfs[fileIndex]) {
       return res.status(404).json({ message: 'Arquivo não encontrado' });
     }
-    const filePath = path.join(__dirname, '../../client/public', colab.pdfs[fileIndex].path);
+    const filePath = path.join(__dirname, '../../uploads', colab.pdfs[fileIndex].path);
     fs.unlink(filePath, async (err) => {
       if (err) {
         return res.status(500).json({ message: 'Erro ao excluir o arquivo' });
