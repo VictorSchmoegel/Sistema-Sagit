@@ -31,19 +31,18 @@ export default function Divinopolis() {
 
   const deleteColab = async (id) => {
     try {
-      const res = await fetch(`/api/colab/delete${params.id}`, {
+      const res = await fetch(`/api/colab/delete/${id}`, {
         method: 'DELETE',
       });
       if (res.ok) {
-        const newColabs = colabs.filter((colab) => colab._id !== id);
-        setColabs(newColabs);
+        const data = await res.json();
+        setColabs(data);
+        setModalIsOpen(false);
       } else {
-        setError('Erro ao deletar colaborador');
+        setError('Erro ao excluir colaborador');
       }
     } catch (error) {
-      setError('Erro ao deletar colaborador');
-    } finally {
-      setModalIsOpen(false);
+      setError('Erro ao excluir colaborador');
     }
   }
 
