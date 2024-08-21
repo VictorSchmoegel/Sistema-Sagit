@@ -32,13 +32,9 @@ export default function VisualizarColab() {
   };
 
   const handleNameChange = (e, index) => {
-    const newFiles = [...files];
-    newFiles[index] = e.target.files[0];
     const newNames = [...fileNames];
     newNames[index] = e.target.value;
     setFileNames(newNames);
-    setFiles(newFiles);
-    console.log('fileNames:', fileNames);
   };
 
   const handleExpiryDateChange = (e, index) => {
@@ -48,10 +44,9 @@ export default function VisualizarColab() {
   };
 
   const handleAddField = () => {
-    setFileNames([...fileNames, 'Novo Arquivo']);
+    setFileNames([...fileNames, '']);
     setFiles([...files, null]);
     setExpiryDates([...expiryDates, '']);
-    console.log(fileNames, files, expiryDates);
   };
 
   const handleSubmit = async (e) => {
@@ -69,7 +64,6 @@ export default function VisualizarColab() {
       });
       const data = await res.json();
       setColab(data.updatedColab);
-      console.log(data);
     } catch (error) {
       console.error(error);
     }
@@ -115,7 +109,7 @@ export default function VisualizarColab() {
             type='button'
             onClick={handleAddField}
           >
-            Adicionar outro PDF
+            Adicionar Documento
           </button>
           <button
             className='bg-blue-500 text-white p-3 rounded-lg'
@@ -126,13 +120,15 @@ export default function VisualizarColab() {
           </button>
         </form>
         <section className='p-3'>
-          {colab && colab.pdfs && colab.pdfs.map((pdf, index) => (
-            <div key={index} className='flex gap-4'>
-              <p>{pdf.name}</p>
-              <a href={`/api/colab/pdf/${params.id}/file/${index}`}>Download</a>
-            </div>
-          ))
-          }
+          <div className='b-3'>
+            {colab && colab.pdfs && colab.pdfs.map((pdf, index) => (
+              <div key={index} className='flex gap-4 border p-3'>
+                <p>{pdf.name}</p>
+                <a href={`/api/colab/pdf/${params.id}/file/${index}`}>Download</a>
+              </div>
+            ))
+            }
+          </div>
         </section>
       </section>
     </main>
