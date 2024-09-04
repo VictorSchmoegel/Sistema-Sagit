@@ -1,6 +1,6 @@
 const Colab = require('../model/colab.model');
 const errorHandler = require('../middlewares/errorHandler');
-const multer = require('multer');
+const multer = require('../middlewares/multer');
 
 const createColab = async (req, res, next) => {
   const { nome, cpf, rg, location } = req.body;
@@ -56,24 +56,34 @@ const getColabByLocation = async (req, res, next) => {
 
 const addPdfFile = async (req, res, next) => {
   const { id } = req.params;
-  const file = req.file;
   const { name, expiryDate } = req.body;
+  const file = req.file;
+
+  if (!file || !name || !expiryDate) {
+    return res.status(400).json({ message: 'Nome, data de validade e arquivo são obrigatórios' });
+  }
+
   try {
-    const pdfs = file.map((file, index) => ({
-      name: name[index],
-      expiryDate: expiryDate[index],
+    const pdf = {
+      name,
+      expiryDate: new Date(expiryDate), // Converte para Date aqui
       data: file.buffer,
-    }));
+    };
+
     const colab = await Colab.findByIdAndUpdate(
       id,
-      { $push: { pdfs: { $each: pdfs } } },
+      { $push: { pdfs: pdf } },
       { new: true }
     );
+
+    if (!colab) {
+      return res.status(404).json({ message: 'Colab não encontrado' });
+    }
+
     res.status(200).json({ message: 'PDF adicionado com sucesso', colab });
   } catch (error) {
     next(error);
   }
-
 };
 
 const deleteColab = async (req, res, next) => {
